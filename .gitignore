@@ -1,0 +1,10 @@
+﻿.paket/paket.exe
+.paket/paket.bootstrapper.exe
+.paket/.store/
+.paket/load/
+paket-files/
+**/[Oo]bj/
+**/[Bb]in/
+.vs/
+**/launchSettings.json
+**.user

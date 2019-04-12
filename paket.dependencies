@@ -1,0 +1,6 @@
+framework: netstandard2.0, netcoreapp2.2
+storage: none
+
+source https://api.nuget.org/v3/index.json
+nuget Argu
+nuget FSharp.Core

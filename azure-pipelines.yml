@@ -1,0 +1,68 @@
+resources:
+
+- repo: self
+
+
+
+pool:
+
+  name: Hosted Ubuntu 1604
+
+#Your build pipeline references an undefined variable named ‘Parameters.RestoreBuildProjects’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+
+#Your build pipeline references an undefined variable named ‘Parameters.RestoreBuildProjects’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+
+#Your build pipeline references the ‘BuildConfiguration’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+
+
+
+steps:
+
+- task: DotNetCoreCLI@2
+
+  displayName: Restore
+
+  inputs:
+
+    command: restore
+
+    projects: 'paket.install.sln'
+
+
+
+- task: DotNetCoreCLI@2
+
+  displayName: Build
+
+  inputs:
+
+    projects: 'paket.install.sln'
+
+    arguments: '--configuration $(BuildConfiguration)'
+
+-task: DotNetCoreCLI@2
+
+  displayName: Pack
+
+  inputs:
+    command: pack
+    configuration: '$(BuildConfiguration)'
+    packagesToPack: 'src/**/*.fsproj'
+    version: '0.1.$(Build.BuildNumber)'
+    packDirectory: '$(build.artifactStagingDirectory)'
+    versioningScheme: 'byBuildNumber' 
+
+- task: PublishBuildArtifacts@1
+
+  displayName: 'Publish Artifact'
+
+  inputs:
+
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+
+  condition: succeededOrFailed()
+
+
+
+
+
