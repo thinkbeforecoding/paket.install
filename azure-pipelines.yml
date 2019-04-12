@@ -46,7 +46,6 @@ steps:
     command: pack
     configuration: '$(BuildConfiguration)'
     packagesToPack: 'src/**/*.fsproj'
-    version: '0.1.$(Build.BuildNumber)'
     packDirectory: '$(build.artifactStagingDirectory)'
     versioningScheme: 'byBuildNumber' 
 
