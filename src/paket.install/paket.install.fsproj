@@ -5,6 +5,8 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <PackAsTool>true</PackAsTool>
     <Description>A dotnet cli tool to bootstrap paket for dotnet build</Description>
+    <PackageProjectUrl>https://github.com/thinkbeforecoding/paket.install</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/thinkbeforecoding/paket.install/blob/master/LICENSE.txt</PackageLicenseUrl>
   </PropertyGroup>
   <PropertyGroup>
     <VersionPrefix>1.0</VersionPrefix>
