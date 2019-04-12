@@ -48,8 +48,6 @@ steps:
     configuration: '$(BuildConfiguration)'
     packagesToPack: 'src/**/*.fsproj'
     packDirectory: '$(build.artifactStagingDirectory)'
-    versioningScheme: 'byEnvVar' 
-    versionEnvVar: 'BuildNumber'
 
 - task: PublishBuildArtifacts@1
 
