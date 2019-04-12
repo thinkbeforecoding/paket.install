@@ -229,13 +229,13 @@ module Install =
 
 
 type Arguments =
-| [<AltCommandLine("-v")>] Version of string
-| [<AltCommandLine("-f")>] Feed of string
+| Version of string
+| Feed of string
 | [<AltCommandLine("-p")>] Paket_Path of string
-| [<AltCommandLine("-s")>] Enalbe_Scripts
+| [<AltCommandLine("-es")>] Enable_Scripts
 | Skip_GitIgnore
-| Silent
-| Verbose
+| [<AltCommandLine("-s")>]Silent
+| [<AltCommandLine("-v")>]Verbose
 with 
     interface IArgParserTemplate with
         member s.Usage =
@@ -244,7 +244,7 @@ with
             | Verbose -> "verbose output"
             | Version _ -> "specify paket version to install"
             | Feed _ -> "specify nuget feed used to download paket bootstrapper"
-            | Enalbe_Scripts -> "enable script generation in paket.dependencies"
+            | Enable_Scripts -> "enable script generation in paket.dependencies"
             | Skip_GitIgnore -> "skip .gitignore generation/modification"
             | Paket_Path _ -> "the paket directory path"
 
@@ -269,7 +269,7 @@ let main argv =
             let props =
                 { Version = result.TryGetResult(Version)
                   Feed = result.GetResult(Feed, Props.defaultFeed ) |> Some
-                  EnableScripts = result.Contains Enalbe_Scripts
+                  EnableScripts = result.Contains Enable_Scripts
                   SkipGitIgnore = result.Contains Skip_GitIgnore
                 }
             Install.run path props

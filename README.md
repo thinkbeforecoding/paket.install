@@ -20,20 +20,19 @@ dotnet tool install paket.install --tool-path ./tools
 # Usage
 
 ```
-USAGE: paket.install.exe [--help] [--version <string>] [--feed <string>] [--paket-path <string>] [--enalbe-scripts]
+USAGE: paket.install.exe [--help] [--version <string>] [--feed <string>] [--paket-path <string>] [--enable-scripts]
                          [--skip-gitignore] [--silent] [--verbose]
 
 OPTIONS:
 
-    --version, -v <string>
-                          specify paket version to install
-    --feed, -f <string>   specify nuget feed used to download paket bootstrapper
+    --version <string>    specify paket version to install
+    --feed <string>       specify nuget feed used to download paket bootstrapper
     --paket-path, -p <string>
                           the paket directory path
-    --enalbe-scripts, -s  enable script generation in paket.dependencies
+    --enable-scripts, -es enable script generation in paket.dependencies
     --skip-gitignore      skip .gitignore generation/modification
-    --silent              silent mode
-    --verbose             verbose output
+    --silent, -s          silent mode
+    --verbose, -v         verbose output
     --help                display this list of options.
 ```
 
