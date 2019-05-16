@@ -57,6 +57,7 @@ type Props = {
     Feed: string option
     EnableScripts: bool
     SkipGitIgnore: bool
+    Frameworks: string
 }
 
 module Props =
@@ -147,8 +148,8 @@ module Paket =
             Log.logfn Info "Install paket dotnet tool"
             DotNet.tool "paket" Path.paket
 
-    let dependencies scripts =
-        [ yield "frameworks: netstandard2.0, netcoreapp2.2"
+    let dependencies scripts frameworks =
+        [ yield "frameworks: " + frameworks
           yield "storage: none"
           if scripts then yield "generate_load_scripts: true"
           yield "source https://api.nuget.org/v3/index.json" ]
@@ -160,7 +161,7 @@ module Paket =
             Log.logfn Warning "paket.dependencies file already exists"
         else
             Log.logfn Info "Creating paket.dependencies file"
-            dependencies props.EnableScripts
+            dependencies props.EnableScripts props.Frameworks
             |> File.writeLines deps
 
 
@@ -231,6 +232,7 @@ module Install =
 type Arguments =
 | Version of string
 | Feed of string
+| [<AltCommandLine("-fw")>] Frameworks of string
 | [<AltCommandLine("-p")>] Paket_Path of string
 | [<AltCommandLine("-es")>] Enable_Scripts
 | Skip_GitIgnore
@@ -244,6 +246,7 @@ with
             | Verbose -> "verbose output"
             | Version _ -> "specify paket version to install"
             | Feed _ -> "specify nuget feed used to download paket bootstrapper"
+            | Frameworks _ -> "specify target .NET framework(s)"
             | Enable_Scripts -> "enable script generation in paket.dependencies"
             | Skip_GitIgnore -> "skip .gitignore generation/modification"
             | Paket_Path _ -> "the paket directory path"
@@ -271,6 +274,7 @@ let main argv =
                   Feed = result.GetResult(Feed, Props.defaultFeed ) |> Some
                   EnableScripts = result.Contains Enable_Scripts
                   SkipGitIgnore = result.Contains Skip_GitIgnore
+                  Frameworks = result.GetResult(Frameworks, "netstandard2.0, netcoreapp2.2")
                 }
             Install.run path props
 
