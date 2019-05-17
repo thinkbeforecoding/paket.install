@@ -194,10 +194,10 @@ module GitIgnore =
 
         let path = path </> ".." </> Path.gitignore
         load path
-        |> add ".paket/paket.exe"
-        |> add ".paket/paket.bootstrapper.exe"
-        |> add ".paket/.store/"
-        |> add ".paket/load/"
+        |> add ".paket/*"
+        |> add "!.paket/Paket.Restore.targets"
+        |> add "!.paket/paket.bootstrapper.proj"
+        |> add "!.paket/paket.bootstrapper.props"
         |> add "paket-files/"
         |> add "**/[Oo]bj/"
         |> add "**/[Bb]in/"
