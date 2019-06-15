@@ -35,6 +35,13 @@ module Log =
 
     let logfn level fmt = Printf.kprintf (log level) fmt
 
+module OS =
+    open System.Runtime.InteropServices
+
+    let isWindows = RuntimeInformation.IsOSPlatform OSPlatform.Windows
+
+    let withExeExt p = if isWindows then p + ".exe" else p
+
 module Xml =
     open System.Xml.Linq
     let xn = XName.op_Implicit
@@ -133,7 +140,7 @@ module DotNet =
         exec ["tool"; "install"; name; "--tool-path"; path ]
 
 module Paket =
-    let exe = "paket.exe"
+    let exe = OS.withExeExt "paket"
 
     let isInstalled exePath =
         IO.File.Exists exePath
@@ -253,7 +260,7 @@ with
 
 [<EntryPoint>]
 let main argv =
-    let parser = ArgumentParser.Create<Arguments>(programName = "paket.install.exe")
+    let parser = ArgumentParser.Create<Arguments>(programName = OS.withExeExt "paket.install")
 
     try
         try
