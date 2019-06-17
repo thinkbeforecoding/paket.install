@@ -1,11 +1,12 @@
 resources:
-
 - repo: self
 
+trigger:
+- master
 
-
+pr:
+- master
 pool:
-
   name: Hosted Ubuntu 1604
 
 variables:
@@ -14,35 +15,22 @@ variables:
   BuildNumber: '1.0.$(Rev:r)'
 
 
-
 steps:
-
 - task: DotNetCoreCLI@2
-
   displayName: Restore
-
   inputs:
-
     command: restore
-
     projects: 'paket.install.sln'
-
 
 
 - task: DotNetCoreCLI@2
-
   displayName: Build
-
   inputs:
-
     projects: 'paket.install.sln'
-
     arguments: '--configuration $(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
-
   displayName: Pack
-
   inputs:
     command: pack
     configuration: '$(BuildConfiguration)'
@@ -50,13 +38,9 @@ steps:
     packDirectory: '$(build.artifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
-
   displayName: 'Publish Artifact'
-
   inputs:
-
     PathtoPublish: '$(build.artifactstagingdirectory)'
-
   condition: succeededOrFailed()
 
 
@@ -66,7 +50,6 @@ steps:
     packagesToPush: '$(build.artifactStagingDirectory)/*.nupkg'
     nuGetFeedType: 'external'
     publishFeedCredentials: 'NugetConnection'
-
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')), ne(variables['Build.Reason'], 'PullRequest'))
 
 
