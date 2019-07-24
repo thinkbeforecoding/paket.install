@@ -65,6 +65,7 @@ type Props = {
     EnableScripts: bool
     SkipGitIgnore: bool
     Frameworks: string
+    ConvertFromNuget: bool
 }
 
 module Props =
@@ -124,16 +125,20 @@ module Resources =
         use reader = new IO.StreamReader(stream)
         reader.ReadToEnd()
 
-module DotNet =
+module Program =
     open System.Diagnostics
 
-    let exec args =
+    let exec program args =
         let info =
             ProcessStartInfo(
-                "dotnet",
+                program,
                 String.concat " " args)
         let p = Diagnostics.Process.Start(info)
         p.WaitForExit()
+
+module DotNet =
+
+    let exec args = Program.exec "dotnet" args
 
     let tool name path =
         Log.logfn Verbose "exec dotnet tool install"
@@ -171,6 +176,10 @@ module Paket =
             dependencies props.EnableScripts props.Frameworks
             |> File.writeLines deps
 
+    let convertFromNuget path =
+        let exePath = path </> exe
+        Log.logfn Verbose "exec paket convert-from-nuget"
+        Program.exec exePath ["convert-from-nuget"; "--force"]
 
 
 module GitIgnore =
@@ -231,6 +240,9 @@ module Install =
 
         Paket.createDependencies path props
 
+        if props.ConvertFromNuget then
+            Paket.convertFromNuget path
+
         if not props.SkipGitIgnore then
             GitIgnore.install path 
 
@@ -243,6 +255,7 @@ type Arguments =
 | [<AltCommandLine("-p")>] Paket_Path of string
 | [<AltCommandLine("-es")>] Enable_Scripts
 | Skip_GitIgnore
+| [<AltCommandLine("-c")>]Convert
 | [<AltCommandLine("-s")>]Silent
 | [<AltCommandLine("-v")>]Verbose
 with 
@@ -256,6 +269,7 @@ with
             | Frameworks _ -> "specify target .NET framework(s)"
             | Enable_Scripts -> "enable script generation in paket.dependencies"
             | Skip_GitIgnore -> "skip .gitignore generation/modification"
+            | Convert -> "convert existing NuGet references"
             | Paket_Path _ -> "the paket directory path"
 
 [<EntryPoint>]
@@ -282,6 +296,7 @@ let main argv =
                   EnableScripts = result.Contains Enable_Scripts
                   SkipGitIgnore = result.Contains Skip_GitIgnore
                   Frameworks = result.GetResult(Frameworks, "netstandard2.0, netcoreapp2.2")
+                  ConvertFromNuget = result.Contains Convert
                 }
             Install.run path props
 
